@@ -28,7 +28,7 @@ public class User {
     @Column(name="updated_at")
     private Instant updatedAt;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,targetEntity = Event.class)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "id",referencedColumnName = "id")
     private Set<Event> events;
 
