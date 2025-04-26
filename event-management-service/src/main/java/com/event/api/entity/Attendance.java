@@ -13,11 +13,14 @@ import java.time.Instant;
 @Data
 public class Attendance {
 
-    @EmbeddedId
-    private AttendanceId id;
+    
     @Enumerated(EnumType.STRING)
     private AttendanceStatusType status;
     @Column(name="responded_at")
     private Instant respondedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
