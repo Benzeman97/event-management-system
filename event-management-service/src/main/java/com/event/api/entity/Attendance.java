@@ -13,6 +13,9 @@ import java.time.Instant;
 @Data
 public class Attendance {
 
+    private String eventId;
+    @Column(name = "user_id")
+    private String userId;
     
     @Enumerated(EnumType.STRING)
     private AttendanceStatusType status;
