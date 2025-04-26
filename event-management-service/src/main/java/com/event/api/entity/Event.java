@@ -36,4 +36,7 @@ public class Event {
     @Column(name="updated_at")
     private Instant updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "host_id", insertable = false, updatable = false)
+    private User host; 
 }
