@@ -28,8 +28,7 @@ public class User {
     @Column(name="updated_at")
     private Instant updatedAt;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "id",referencedColumnName = "id")
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Event> events;
 
 }
