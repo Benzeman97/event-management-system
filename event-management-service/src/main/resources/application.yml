@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: event-management-service
+
+server:
+  port: 8090
+
+
