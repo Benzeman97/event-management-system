@@ -22,8 +22,6 @@ public class Event {
     private String id;
     private String title;
     private String description;
-    @Column(name = "host_id")
-    private String hostId;
     private Instant startTime;
     private Instant endTime;
     private String location;
