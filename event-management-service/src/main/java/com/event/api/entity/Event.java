@@ -4,12 +4,13 @@ import com.event.api.enums.EventVisibilityType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name="event")
@@ -19,17 +20,21 @@ import java.time.Instant;
 public class Event {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String title;
     private String description;
     private Instant startTime;
     private Instant endTime;
     private String location;
+
     @Enumerated(EnumType.STRING)
     private EventVisibilityType visibility;
+
     @CreatedDate
     @Column(name="created_at")
     private Instant createdAt;
+
     @LastModifiedDate
     @Column(name="updated_at")
     private Instant updatedAt;

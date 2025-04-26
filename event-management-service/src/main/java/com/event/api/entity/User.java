@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "user")
@@ -18,12 +19,15 @@ import java.util.Set;
 public class User {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String name;
     private String email;
+
     @CreatedDate
     @Column(name="created_at",updatable = false)
     private Instant createdAt;
+
     @LastModifiedDate
     @Column(name="updated_at")
     private Instant updatedAt;
