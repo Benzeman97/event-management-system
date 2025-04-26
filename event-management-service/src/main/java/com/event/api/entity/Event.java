@@ -39,5 +39,9 @@ public class Event {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_id", insertable = false, updatable = false)
-    private User host; 
+    private User host;
+
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Attendance> attendances;
+
 }
