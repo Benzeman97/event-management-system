@@ -13,7 +13,9 @@ import java.time.Instant;
 @Data
 public class Attendance {
 
+    @Column(name = "event_id")
     private String eventId;
+    
     @Column(name = "user_id")
     private String userId;
     
@@ -21,6 +23,10 @@ public class Attendance {
     private AttendanceStatusType status;
     @Column(name="responded_at")
     private Instant respondedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_id")
+    private Event event;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
