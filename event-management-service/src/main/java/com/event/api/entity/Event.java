@@ -19,9 +19,6 @@ import java.time.Instant;
 public class Event {
 
     @Id
-    @GeneratedValue
-    @UuidGenerator
-    @Column(length = 36)
     private String id;
     private String title;
     private String description;
