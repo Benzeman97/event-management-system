@@ -8,7 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -29,6 +29,6 @@ public class User {
     private Instant updatedAt;
 
     @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private List<Event> events;
+    private Set<Event> events;
 
 }
