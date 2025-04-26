@@ -13,22 +13,22 @@ import java.time.Instant;
 @Data
 public class Attendance {
 
-    @Column(name = "event_id")
-    private String eventId;
-    
-    @Column(name = "user_id")
-    private String userId;
+    @EmbeddedId
+    private AttendanceId id;
     
     @Enumerated(EnumType.STRING)
     private AttendanceStatusType status;
+    
     @Column(name="responded_at")
     private Instant respondedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("eventId")
     @JoinColumn(name = "event_id")
     private Event event;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
