@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ErrorMessageResponse implements Serializable {
 
-    private int code;
-    private String message;
+    private int errorCode;
+    private String errorMessage;
 }

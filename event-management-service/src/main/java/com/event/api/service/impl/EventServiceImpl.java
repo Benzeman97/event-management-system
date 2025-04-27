@@ -41,7 +41,7 @@ public class EventServiceImpl implements EventService {
             return event.getId().toString();
         } catch (Exception ex){
             LOGGER.error("An error occurred while creating event: {}", ex.getMessage(), ex);
-            throw new ApplicationException("100001","error.create.event");
+            throw new ApplicationException(100001,"error.create.event");
         }
     }
 
