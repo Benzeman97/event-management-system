@@ -2,7 +2,12 @@ package com.event.api.service.impl;
 
 import com.event.api.dto.request.CreateEventRequest;
 import com.event.api.dto.request.UpdateEventRequest;
+import com.event.api.dto.response.EventDetailsResponse;
+import com.event.api.entity.Attendance;
+import com.event.api.entity.AttendanceId;
 import com.event.api.entity.Event;
+import com.event.api.entity.User;
+import com.event.api.enums.AttendanceStatusType;
 import com.event.api.enums.EventVisibilityType;
 import com.event.api.exception.ApplicationException;
 import com.event.api.exception.DataNotFoundException;
@@ -125,13 +130,33 @@ public class EventServiceImpl implements EventService {
     @Override
     public Page<Event> getUpcomingEvents(Pageable pageable) {
         Instant currentTime = Instant.now();
+        LOGGER.info("Fetching Upcoming Events - Page: {}, Size: {}", pageable.getPageNumber(), pageable.getPageSize());
         return eventRepository.findUpcomingEvents(currentTime, pageable);
+    }
+
+    @Override
+    public List<Event> getUserEvents(UUID userId) {
+        LOGGER.info("Fetching Events for User ID {}", userId);
+        return eventRepository.findUserEventsByUserId(userId);
+    }
+
+    @Override
+    public EventDetailsResponse getEventDetails(UUID eventId) {
+
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> {
+                    LOGGER.error("Event with ID {} not found", eventId);
+                    throw new DataNotFoundException("error.event.not.found");});
+        int attendeeCount = event.getAttendances().size();  // counting the attendances
+        LOGGER.info("Fetching Event Details with ID {}", eventId);
+        return new EventDetailsResponse(event, attendeeCount);
     }
 
     private Event buildEvent(CreateEventRequest request) {
 
         LocalDateTime startTime = DateTimeUtil.parseToLocalDateTime(request.getStartTime());
         LocalDateTime endTime = DateTimeUtil.parseToLocalDateTime(request.getEndTime());
+        User host = userService.getHost(request.getHostId());
 
         Event event = new Event();
         event.setTitle(request.getTitle());
@@ -140,7 +165,8 @@ public class EventServiceImpl implements EventService {
         event.setStartTime(DateTimeUtil.convertLocalDateTimeToInstant(startTime));
         event.setEndTime(DateTimeUtil.convertLocalDateTimeToInstant(endTime));
         event.setVisibility(EventVisibilityType.valueOf(request.getEventVisibilityType().toUpperCase()));
-        event.setHost(userService.getHost(request.getHostId()));
+        event.setHost(host);
+        event.getAttendances().add(handleHostAttendance(event,host));
         return event;
     }
 
@@ -148,6 +174,7 @@ public class EventServiceImpl implements EventService {
 
             LocalDateTime startTime = DateTimeUtil.parseToLocalDateTime(request.getStartTime());
             LocalDateTime endTime = DateTimeUtil.parseToLocalDateTime(request.getEndTime());
+            User host = userService.getHost(request.getHostId());
 
             event.setTitle(request.getTitle());
             event.setDescription(request.getDescription());
@@ -155,8 +182,19 @@ public class EventServiceImpl implements EventService {
             event.setStartTime(DateTimeUtil.convertLocalDateTimeToInstant(startTime));
             event.setEndTime(DateTimeUtil.convertLocalDateTimeToInstant(endTime));
             event.setVisibility(EventVisibilityType.valueOf(request.getEventVisibilityType().toUpperCase()));
-            event.setHost(userService.getHost(request.getHostId()));
+            event.setHost(host);
+            event.getAttendances().add(handleHostAttendance(event,host));
             return event;
+    }
+
+    private Attendance handleHostAttendance(Event event, User user){
+        Attendance hostAttendance = new Attendance();
+        hostAttendance.setId(new AttendanceId(event.getId(),user.getId()));
+        hostAttendance.setEvent(event);
+        hostAttendance.setUser(user);
+        hostAttendance.setStatus(AttendanceStatusType.GOING); // // Default status for host
+        hostAttendance.setRespondedAt(Instant.now());
+        return hostAttendance;
     }
 
 }

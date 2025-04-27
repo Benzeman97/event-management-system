@@ -2,6 +2,7 @@ package com.event.api.service;
 
 import com.event.api.dto.request.UpdateEventRequest;
 import com.event.api.dto.request.CreateEventRequest;
+import com.event.api.dto.response.EventDetailsResponse;
 import com.event.api.entity.Event;
 import com.event.api.model.EventFilterCriteria;
 import org.springframework.data.domain.Page;
@@ -18,4 +19,6 @@ public interface EventService {
     void deleteEvent(UUID eventId);
     List<Event> getFilteredEvents(EventFilterCriteria filterCriteria);
     Page<Event> getUpcomingEvents(Pageable pageable);
+    List<Event> getUserEvents(UUID userId);
+    EventDetailsResponse getEventDetails(UUID eventId);
 }

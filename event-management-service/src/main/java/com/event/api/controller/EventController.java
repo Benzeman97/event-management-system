@@ -2,6 +2,7 @@ package com.event.api.controller;
 
 import com.event.api.dto.request.CreateEventRequest;
 import com.event.api.dto.request.UpdateEventRequest;
+import com.event.api.dto.response.EventDetailsResponse;
 import com.event.api.entity.Event;
 import com.event.api.exception.ApplicationException;
 import com.event.api.model.EventFilterCriteria;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 @CrossOrigin(maxAge = 3600)
@@ -40,9 +40,9 @@ public class EventController {
 
     @DeleteMapping
     public ResponseEntity<Void> deleteEvent(@PathVariable String eventId){
+        try {
          if(eventId.isBlank())
              return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-         try {
              eventService.deleteEvent(UUID.fromString(eventId));
              return ResponseEntity.noContent().build();
          }catch (IllegalArgumentException ex){
@@ -68,5 +68,29 @@ public class EventController {
 
         Pageable pageable = PageRequest.of(page, size);
         return new ResponseEntity<>(eventService.getUpcomingEvents(pageable),HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Event>> getUserEvents(@PathVariable String userId) {
+        try {
+            if(userId.isBlank())
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            UUID uuid = UUID.fromString(userId);
+            return new ResponseEntity<>(eventService.getUserEvents(uuid), HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            throw new ApplicationException(100004, "error.invalid.uuid.format");
+        }
+    }
+
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventDetailsResponse> getEventDetails(@PathVariable String eventId) {
+        try {
+            if (eventId.isBlank())
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            UUID uuid = UUID.fromString(eventId);
+            return new ResponseEntity<>(eventService.getEventDetails(uuid), HttpStatus.OK);
+        } catch (IllegalArgumentException ex) {
+            throw new ApplicationException(100004, "error.invalid.uuid.format");
+        }
     }
 }

@@ -27,4 +27,8 @@ public interface EventRepository extends JpaRepository<Event, UUID> {
 
     @Query("SELECT e FROM Event e WHERE e.startTime > :currentTime ORDER BY e.startTime ASC")
     Page<Event> findUpcomingEvents(@Param("currentTime") Instant currentTime, Pageable pageable);
+
+    @Query("SELECT DISTINCT e FROM Event e LEFT JOIN e.attendances a " +
+            "WHERE e.host.id = :userId OR a.user.id = :userId")
+    List<Event> findUserEventsByUserId(@Param("userId") UUID userId);
 }
