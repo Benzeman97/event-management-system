@@ -25,7 +25,9 @@ public class Event {
     private UUID id;
     private String title;
     private String description;
+    @Column(name="start_time")
     private Instant startTime;
+    @Column(name="end_time")
     private Instant endTime;
     private String location;
 
