@@ -13,8 +13,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "user")
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class User {
 

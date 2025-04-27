@@ -9,8 +9,8 @@ import java.time.Instant;
 
 @Entity
 @Table(name="Attendance")
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 public class Attendance {
 
     @EmbeddedId

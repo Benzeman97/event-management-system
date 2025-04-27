@@ -1,6 +1,7 @@
 package com.event.api.controller;
 
 import com.event.api.dto.request.CreateEventRequest;
+import com.event.api.dto.request.UpdateEventRequest;
 import com.event.api.service.EventService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,11 @@ public class EventController {
     @PostMapping
     public ResponseEntity<String> createEvent(@RequestBody CreateEventRequest request){
              return new ResponseEntity<>(eventService.createEvent(request), HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<String> updateEvent(@RequestBody UpdateEventRequest request){
+        return new ResponseEntity<>(eventService.updateEvent(request), HttpStatus.OK);
     }
 
 }

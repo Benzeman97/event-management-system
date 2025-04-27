@@ -11,8 +11,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateEventRequest implements Serializable {
+public class UpdateEventRequest implements Serializable {
 
+    @NotBlank(message = "{event.eventId.required}")
+    private String eventId;
     @NotBlank(message = "{event.title.required}")
     @Size(min = 10, max = 100, message = "{event.title.length.invalid}")
     private String title;
@@ -28,4 +30,5 @@ public class CreateEventRequest implements Serializable {
     @NotBlank(message = "{event.endTime.required}")
     private String endTime;
     private String eventVisibilityType;
+
 }

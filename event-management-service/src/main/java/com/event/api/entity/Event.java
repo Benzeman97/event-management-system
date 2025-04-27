@@ -2,6 +2,7 @@ package com.event.api.entity;
 
 import com.event.api.enums.EventVisibilityType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,8 +15,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name="event")
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Event {
 
