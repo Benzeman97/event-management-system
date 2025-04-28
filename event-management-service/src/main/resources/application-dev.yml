@@ -1,0 +1,8 @@
+security:
+  jwt:
+    public-key: classpath:public.txt
+  oauth:
+    access-token-uri: 'http://177.0.0.1:9092/oauth2/token'
+    client-id: event-managment-service
+    client-secret: rzv9pBSHclLoEaFmZ81PtmT03wAmaJSXLkOwi8tI=
+    grant-type: password
