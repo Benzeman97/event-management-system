@@ -4,11 +4,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
-public class WebClientUtil {
+public class RestTemplateUtil  {
 
-    public WebClient createWebClient(String baseUrl) {
-        return WebClient.builder()
-                .baseUrl(baseUrl)
-                .build();
+    public RestTemplate createRestTemplate() {
+        return new RestTemplate();
     }
 }
