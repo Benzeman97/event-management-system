@@ -8,14 +8,14 @@ security:
     grant-type: password
 
 database:
-  host: '44.217.118.101'
-  port: 3306
+  host: 'event-managment-db.cb6kiu4gsw4z.us-east-1.rds.amazonaws.com'
+  port: 5432
   db-name: event_management_db
 
 spring:
   datasource:
     url: 'jdbc:postgresql://${database.host}:${database.port}/${database.db-name}?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false'
-    username: ${DB_USERNAME}
+    username: postgres
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
