@@ -39,3 +39,9 @@ spring:
       cache-names: EVENTS
       redis:
         time-to-live: 300000
+
+logging:
+  file:
+    name: '/home/ubuntu/logs/event-management-sevice-dev.log'
+  level:
+    root: info
