@@ -6,6 +6,7 @@ import com.event.api.repository.AttendanceRepository;
 import com.event.api.service.AttendanceService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
+    @Cacheable(key = "{#eventId, #userId, #root.methodName}",value = "EVENTS")
     public String getAttendanceStatusForEvent(UUID eventId, UUID userId) {
 
         Attendance attendance = attendanceRepository.findByEventIdAndUserId(eventId, userId)

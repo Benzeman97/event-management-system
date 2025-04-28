@@ -6,6 +6,7 @@ import com.event.api.repository.UserRepository;
 import com.event.api.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(key = "{#hostId,#root.methodName}",value = "EVENTS")
     public User getHost(String hostId) {
         return userRepository.findById(UUID.fromString(hostId))
                 .orElseThrow(()->{

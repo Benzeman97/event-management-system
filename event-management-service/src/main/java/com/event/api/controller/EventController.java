@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,16 +31,19 @@ public class EventController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> createEvent(@Valid @RequestBody CreateEventRequest request){
              return new ResponseEntity<>(eventService.createEvent(request), HttpStatus.CREATED);
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyRole('ADMIN','HOST')")
     public ResponseEntity<String> updateEvent(@Valid @RequestBody UpdateEventRequest request){
         return new ResponseEntity<>(eventService.updateEvent(request), HttpStatus.OK);
     }
 
     @DeleteMapping
+    @PreAuthorize("hasAnyRole('ADMIN','HOST')")
     public ResponseEntity<Void> deleteEvent(@PathVariable String eventId){
         try {
          if(eventId.isBlank())

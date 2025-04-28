@@ -1,6 +1,8 @@
 spring:
   application:
     name: event-management-service
+  profiles:
+    active: dev
 
 server:
   port: 8090

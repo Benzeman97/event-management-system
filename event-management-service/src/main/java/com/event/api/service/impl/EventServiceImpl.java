@@ -18,6 +18,7 @@ import com.event.api.service.UserService;
 import com.event.api.util.DateTimeUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -98,6 +99,9 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Cacheable(
+            key = "{#filterCriteria.startDate, #filterCriteria.endDate, #filterCriteria.location, #filterCriteria.visibility, #root.methodName}",
+            value = "EVENTS")
     public List<Event> getFilteredEvents(EventFilterCriteria filterCriteria) {
 
         Instant startDate = null;
@@ -128,6 +132,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Cacheable(key = "{#pageable, #root.methodName}",value = "EVENTS")
     public Page<Event> getUpcomingEvents(Pageable pageable) {
         Instant currentTime = Instant.now();
         LOGGER.info("Fetching Upcoming Events - Page: {}, Size: {}", pageable.getPageNumber(), pageable.getPageSize());
@@ -135,12 +140,14 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Cacheable(key = "{#userId, #root.methodName}",value = "EVENTS")
     public List<Event> getUserEvents(UUID userId) {
         LOGGER.info("Fetching Events for User ID {}", userId);
         return eventRepository.findUserEventsByUserId(userId);
     }
 
     @Override
+    @Cacheable(key = "{#eventId, #root.methodName}",value = "EVENTS")
     public EventDetailsResponse getEventDetails(UUID eventId) {
 
         Event event = eventRepository.findById(eventId)
