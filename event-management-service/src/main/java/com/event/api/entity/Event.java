@@ -2,7 +2,6 @@ package com.event.api.entity;
 
 import com.event.api.enums.EventVisibilityType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -43,7 +42,7 @@ public class Event {
     private Instant updatedAt;
 
     @Column(name = "host_id")
-    private String hostId;
+    private UUID hostId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "host_id", insertable = false, updatable = false)

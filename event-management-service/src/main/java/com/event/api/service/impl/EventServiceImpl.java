@@ -67,7 +67,7 @@ public class EventServiceImpl implements EventService {
                           LOGGER.error("Event with ID {} not found", request.getEventId());
                           throw new DataNotFoundException("error.data.not.found");
                       });
-               event = updateEvent(event,request);
+               event = modifyEvent(event,request);
                eventRepository.save(event);
                LOGGER.info("Event updated successfully with ID {}", request.getEventId());
                 return event.getId().toString();
@@ -170,7 +170,7 @@ public class EventServiceImpl implements EventService {
         return event;
     }
 
-    private Event updateEvent(Event event,UpdateEventRequest request) {
+    private Event modifyEvent(Event event,UpdateEventRequest request) {
 
             LocalDateTime startTime = DateTimeUtil.parseToLocalDateTime(request.getStartTime());
             LocalDateTime endTime = DateTimeUtil.parseToLocalDateTime(request.getEndTime());
@@ -192,7 +192,7 @@ public class EventServiceImpl implements EventService {
         hostAttendance.setId(new AttendanceId(event.getId(),user.getId()));
         hostAttendance.setEvent(event);
         hostAttendance.setUser(user);
-        hostAttendance.setStatus(AttendanceStatusType.GOING); // // Default status for host
+        hostAttendance.setStatus(AttendanceStatusType.GOING); // Default status for host
         hostAttendance.setRespondedAt(Instant.now());
         return hostAttendance;
     }

@@ -7,6 +7,7 @@ import com.event.api.entity.Event;
 import com.event.api.exception.ApplicationException;
 import com.event.api.model.EventFilterCriteria;
 import com.event.api.service.EventService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +30,12 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createEvent(@RequestBody CreateEventRequest request){
+    public ResponseEntity<String> createEvent(@Valid @RequestBody CreateEventRequest request){
              return new ResponseEntity<>(eventService.createEvent(request), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<String> updateEvent(@RequestBody UpdateEventRequest request){
+    public ResponseEntity<String> updateEvent(@Valid @RequestBody UpdateEventRequest request){
         return new ResponseEntity<>(eventService.updateEvent(request), HttpStatus.OK);
     }
 
