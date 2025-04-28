@@ -1,20 +1,23 @@
 package com.event.api.secutity;
 
-import com.event.api.util.WebClientUtil;
+import org.springframework.http.*;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class OAuth2AuthenticationProvider {
 
-    private SecurityProperties securityProperties;
-    private final WebClientUtil webClientUtil;
+    private final SecurityProperties securityProperties;
+    private final RestTemplate restTemplate;
 
-    public OAuth2AuthenticationProvider(SecurityProperties securityProperties, WebClientUtil webClientUtil){
+    public OAuth2AuthenticationProvider(SecurityProperties securityProperties, RestTemplate restTemplate){
         this.securityProperties=securityProperties;
-        this.webClientUtil=webClientUtil;
+        this.restTemplate=restTemplate;
     }
 
     public OAuth2AccessToken obtainOAuth2AccessToken(String userName, String password){
@@ -24,24 +27,26 @@ public class OAuth2AuthenticationProvider {
         String tokenUri = oAuthProperties.getAccessTokenUri();
         String clientId = oAuthProperties.getClientId();
         String clientSecret = oAuthProperties.getClientSecret();
+        String grantType = oAuthProperties.getGrantType();
 
-        String body = "grant_type=password&username=" + userName +
-                "&password=" + password +
-                "&client_id=" + clientId +
-                "&client_secret=" + clientSecret;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        Mono<OAuth2AccessToken> accessTokenMono = webClientUtil.createWebClient(tokenUri)
-                .post()
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(OAuth2AccessToken.class);
+        Map<String, String> formData = new HashMap<>();
+        formData.put("grant_type", grantType);
+        formData.put("username", userName);
+        formData.put("password", password);
+        formData.put("client_id", clientId);
+        formData.put("client_secret", clientSecret);
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(formData, headers);
 
         try {
-            return accessTokenMono.block();
+            ResponseEntity<OAuth2AccessToken> response = restTemplate.exchange(
+                    tokenUri, HttpMethod.POST, request, OAuth2AccessToken.class);
+            return response.getBody();
         } catch (Exception ex) {
             throw new BadCredentialsException("Authentication failed", ex);
         }
-
     }
 }
