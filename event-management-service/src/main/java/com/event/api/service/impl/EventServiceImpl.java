@@ -174,6 +174,7 @@ public class EventServiceImpl implements EventService {
         event.setVisibility(EventVisibilityType.valueOf(request.getEventVisibilityType().toUpperCase()));
         event.setHost(host);
         event.getAttendances().add(handleHostAttendance(event,host));
+
         return event;
     }
 
