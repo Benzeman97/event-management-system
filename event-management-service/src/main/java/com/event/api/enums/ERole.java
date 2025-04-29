@@ -3,7 +3,7 @@ package com.event.api.enums;
 public enum ERole {
 
     ROLE_USER(101, "ROLE_USER"),
-    ROLE_MODERATOR(102, "ROLE_HOST"),
+    ROLE_HOST(102, "ROLE_HOST"),
     ROLE_ADMIN(103, "ROLE_ADMIN");
 
     private int id;
