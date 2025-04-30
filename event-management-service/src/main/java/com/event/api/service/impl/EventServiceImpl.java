@@ -22,6 +22,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -43,6 +44,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public String createEvent(CreateEventRequest request){
 
         try {
@@ -60,10 +62,11 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public String updateEvent(UpdateEventRequest request) {
         try{
 
-              Event event = eventRepository.findById(UUID.fromString(request.getEventId()))
+              Event event = eventRepository.findByIdForUpdate(UUID.fromString(request.getEventId()))
                       .orElseThrow(()->{
                           LOGGER.error("Event with ID {} not found", request.getEventId());
                           throw new DataNotFoundException("error.data.not.found");
@@ -83,6 +86,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public void deleteEvent(UUID eventId) {
        try {
            Event event = eventRepository.findById(eventId)
