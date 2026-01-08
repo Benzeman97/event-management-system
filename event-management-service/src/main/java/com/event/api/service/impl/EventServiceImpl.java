@@ -48,7 +48,8 @@ public class EventServiceImpl implements EventService {
     public String createEvent(CreateEventRequest request){
 
         try {
-            Event event = buildEvent(request);
+            User host = userService.getHost(request.getHostId());
+            Event event = EventMapper.createEventFromRequest(request,host);
             event = eventRepository.save(event);
             LOGGER.info("New event has been created with event id {}", event.getId());
             return event.getId().toString();
@@ -71,7 +72,8 @@ public class EventServiceImpl implements EventService {
                           LOGGER.error("Event with ID {} not found", request.getEventId());
                           throw new DataNotFoundException("error.data.not.found");
                       });
-               event = modifyEvent(event,request);
+               User host = userService.getHost(request.getHostId());
+               event = EventMapper.updateEventFromRequest(request,event,host);
                eventRepository.save(event);
                LOGGER.info("Event updated successfully with ID {}", request.getEventId());
                 return event.getId().toString();
@@ -163,50 +165,5 @@ public class EventServiceImpl implements EventService {
         return new EventDetailsResponse(event, attendeeCount);
     }
 
-    private Event buildEvent(CreateEventRequest request) {
-
-        LocalDateTime startTime = DateTimeUtil.parseToLocalDateTime(request.getStartTime());
-        LocalDateTime endTime = DateTimeUtil.parseToLocalDateTime(request.getEndTime());
-        User host = userService.getHost(request.getHostId());
-
-        Event event = new Event();
-        event.setTitle(request.getTitle());
-        event.setDescription(request.getDescription());
-        event.setLocation(request.getLocation());
-        event.setStartTime(DateTimeUtil.convertLocalDateTimeToInstant(startTime));
-        event.setEndTime(DateTimeUtil.convertLocalDateTimeToInstant(endTime));
-        event.setVisibility(EventVisibilityType.valueOf(request.getEventVisibilityType().toUpperCase()));
-        event.setHost(host);
-        event.getAttendances().add(handleHostAttendance(event,host));
-
-        return event;
-    }
-
-    private Event modifyEvent(Event event,UpdateEventRequest request) {
-
-            LocalDateTime startTime = DateTimeUtil.parseToLocalDateTime(request.getStartTime());
-            LocalDateTime endTime = DateTimeUtil.parseToLocalDateTime(request.getEndTime());
-            User host = userService.getHost(request.getHostId());
-
-            event.setTitle(request.getTitle());
-            event.setDescription(request.getDescription());
-            event.setLocation(request.getLocation());
-            event.setStartTime(DateTimeUtil.convertLocalDateTimeToInstant(startTime));
-            event.setEndTime(DateTimeUtil.convertLocalDateTimeToInstant(endTime));
-            event.setVisibility(EventVisibilityType.valueOf(request.getEventVisibilityType().toUpperCase()));
-            event.setHost(host);
-            event.getAttendances().add(handleHostAttendance(event,host));
-            return event;
-    }
-
-    private Attendance handleHostAttendance(Event event, User user){
-        Attendance hostAttendance = new Attendance();
-        hostAttendance.setId(new AttendanceId(event.getId(),user.getId()));
-        hostAttendance.setEvent(event);
-        hostAttendance.setUser(user);
-        hostAttendance.setStatus(AttendanceStatusType.GOING); // Default status for host
-        hostAttendance.setRespondedAt(Instant.now());
-        return hostAttendance;
-    }
 
 }
