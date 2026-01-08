@@ -5,7 +5,7 @@ import com.event.api.entity.Event;
 public class EventMapper{
 
 
-    public static Event toEntity(CreateEventRequest request, User host){
+    public static Event createEventFromRequest(CreateEventRequest request, User host){
       
              LocalDateTime startTime = DateTimeUtil.parseToLocalDateTime(request.getStartTime());
              LocalDateTime endTime = DateTimeUtil.parseToLocalDateTime(request.getEndTime());
@@ -24,7 +24,7 @@ public class EventMapper{
             return event;
     }
 
-     public static Event toEntity(UpdateEventRequest request,User host, Event event) {
+     public static Event updateEventFromRequest(UpdateEventRequest request,User host, Event event) {
        
              LocalDateTime startTime = DateTimeUtil.parseToLocalDateTime(request.getStartTime());
              LocalDateTime endTime = DateTimeUtil.parseToLocalDateTime(request.getEndTime());
@@ -43,3 +43,4 @@ public class EventMapper{
      }
 
 }
+
