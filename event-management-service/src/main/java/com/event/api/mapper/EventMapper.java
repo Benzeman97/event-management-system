@@ -2,7 +2,7 @@ package com.event.api.mapper;
 
 import com.event.api.entity.Event;
 
-public class EventMapper{
+public class EventMapper {
 
 
     public static Event createEventFromRequest(CreateEventRequest request, User host){
@@ -43,4 +43,5 @@ public class EventMapper{
      }
 
 }
+
 
