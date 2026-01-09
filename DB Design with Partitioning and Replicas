@@ -12,6 +12,97 @@ PARTITION BY HASH(user_id)
 PARTITIONS 5;
 
 
+Setup Master-Slave Replication
+--------------------------------
+
+Step 1: Prepare Master
+
+1. Edit my.cnf (MySQL config) on master:
+
+[mysqld]
+server-id = 1 //  unique per server
+log-bin = mysql-bin // enables binary logging (required for replication)
+binlog-do-db = my_database_name // replicate only this database (optional)
+
+2. Restart MySQL master:
+
+sudo systemctl restart mysql
+
+3. Create replication user: (Replication user is a special MySQL user that only the slave uses to connect to the master. Its only purpose is to pull binlog events from the master.)
+
+CREATE USER 'repl_user'@'%' IDENTIFIED BY 'repl_password';
+GRANT REPLICATION SLAVE ON *.* TO 'repl_user'@'%';
+FLUSH PRIVILEGES;
+
+4. Lock master for a consistent snapshot (optional, recommended for big tables):
+
+FLUSH TABLES WITH READ LOCK;
+// Ensures all pending writes in memory are written to disk.
+// This makes sure the slave sees a consistent state of the database.
+// After this command, no one can write to the database until you release the lock.
+// SELECT queries can still run.
+// When you take a backup (e.g., with mysqldump) for a slave, you want the exact state of the master at one point in time.
+// Without the lock, the database could be changing while the dump runs → replication may break or cause data inconsistency.
+
+
+SHOW MASTER STATUS;
+// Shows the current binary log file and position on the master.
+// Note the File and Position values — you’ll use these on the slave
+// File → The current binary log file the master is writing to (mysql-bin.000012)
+// Position → The exact offset in that log (120)
+// Slave needs to know from where to start reading the binlog.
+// This ensures that replication starts exactly at the point you took the backup, so no data is lost or duplicated.
+
+//FLUSH TABLES WITH READ LOCK is temporary, only for taking consistent backups.
+// Do not keep it locked too long — it blocks all writes.
+// You can use this command to unlock tables "UNLOCK TABLES;"
+// For very large tables, some setups use mysqldump with --single-transaction (for InnoDB) → avoids locking completely.
+
+Step 2: Prepare Slave
+
+1. Edit my.cnf on slave:
+
+[mysqld]
+server-id = 2 // unique per server
+relay-log = mysql-relay-bin // required for replication
+
+2. Restart MySQL slave:
+
+sudo systemctl restart mysql
+
+3. Import database snapshot from master (dump the DB with partitions):
+
+mysqldump -u root -p --databases my_database_name > db_dump.sql
+//This creates the actual backup (dump of all tables, including partitions)
+
+Unlock the master (allow writes again): UNLOCK TABLES;
+
+mysql -u root -p < db_dump.sql
+// Restore the backup to the slave:
+
+
+Step 3: Configure Slave to Connect to Master
+
+CHANGE MASTER TO
+  MASTER_HOST='master_ip',
+  MASTER_USER='repl_user',
+  MASTER_PASSWORD='repl_password',
+  MASTER_LOG_FILE='mysql-bin.000001',  
+  MASTER_LOG_POS=12345;            
+
+START SLAVE;
+
+Check replication:
+
+SHOW SLAVE STATUS\G
+
+  Slave_IO_Running: Yes
+  Slave_SQL_Running: Yes
+
+Step 4: Use Slaves for Reads in Application
+
+Master → all writes
+Slave → all reads
 
 
 
