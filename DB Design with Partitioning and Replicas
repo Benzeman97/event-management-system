@@ -1,5 +1,17 @@
-DB Design with Partitioning and Replicas
------------------------------------------
+Create a User table with 5 Partitions
+-----------------------------------
+
+CREATE TABLE User (
+  user_id BIGINT NOT NULL,
+  name VARCHAR(100),
+  email VARCHAR(150),
+  created_at DATETIME,
+  PRIMARY KEY (user_id)
+)
+PARTITION BY HASH(user_id)
+PARTITIONS 5;
+
+
 
 
 
