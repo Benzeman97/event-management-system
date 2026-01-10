@@ -1,3 +1,6 @@
+server:
+  port: 8090
+
 security:
   jwt:
     public-key: classpath:public.txt
