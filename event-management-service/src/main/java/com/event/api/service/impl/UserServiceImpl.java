@@ -17,9 +17,11 @@ public class UserServiceImpl implements UserService {
     final private static Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
+    private final UserMapper mapper;
 
-    public UserServiceImpl(UserRepository userRepository){
+    public UserServiceImpl(UserRepository userRepository, UserMapper mapper){
         this.userRepository=userRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -30,5 +32,20 @@ public class UserServiceImpl implements UserService {
                     LOGGER.error("User with ID {} not found", hostId);
                     throw new DataNotFoundException("error.data.not.found");
                 });
+    }
+
+    @Override
+    @Transactional
+    public UserResponse updateUser(UpdateUserRequest request) {
+
+        User user = repository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        mapper.updateEntity(request, user);
+
+        // JPA dirty checking will update automatically (You don’t have to call save() manually for updates in this case)
+        // Loaded entity from repository + @Transactional  → JPA dirty checking handles UPDATE automatically
+        
+        return mapper.toResponse(user);
     }
 }
