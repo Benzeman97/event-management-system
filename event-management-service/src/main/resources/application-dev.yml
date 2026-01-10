@@ -8,13 +8,38 @@ security:
     grant-type: password
 
 database:
-  host: 'event-managment-db.cb6kiu4gsw4z.us-east-1.rds.amazonaws.com'
+  host1: 'event-managment-db.cb6kiu4gsw4z.us-east-1.rds.amazonaws.com'
+  host2: 'event-managment-db.cb6kiu4gsw5z.us-east-1.rds.amazonaws.com'
+  host3: 'event-managment-db.cb6kiu4gsw6z.us-east-1.rds.amazonaws.com'
   port: 5432
   db-name: event_management_db
 
 spring:
   datasource:
-    url: 'jdbc:postgresql://${database.host}:${database.port}/${database.db-name}?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false'
+   master:
+    url: 'jdbc:postgresql://${database.host1}:${database.port}/${database.db-name}?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false'
+    username: postgres
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      connection-test-query: SELECT 1
+   slave1:
+    url: 'jdbc:postgresql://${database.host2}:${database.port}/${database.db-name}?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false'
+    username: postgres
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      connection-test-query: SELECT 1
+  slave2:
+    url: 'jdbc:postgresql://${database.host3}:${database.port}/${database.db-name}?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false'
     username: postgres
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
