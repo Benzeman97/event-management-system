@@ -2,7 +2,7 @@
 
 public class AttendanceMapper {
 
-  public static Attendance handleHostAttendance(Event event, User user){
+  public static Attendance toEntity(Event event, User user){
     
         Attendance hostAttendance = new Attendance();
         hostAttendance.setId(new AttendanceId(event.getId(),user.getId()));
@@ -14,3 +14,4 @@ public class AttendanceMapper {
     }
 
 }
+
