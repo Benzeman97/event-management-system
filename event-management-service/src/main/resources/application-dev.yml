@@ -16,39 +16,42 @@ database:
 
 spring:
   datasource:
-   master:
-    url: 'jdbc:postgresql://${database.host1}:${database.port}/${database.db-name}?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false'
-    username: postgres
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
-      idle-timeout: 600000
-      connection-test-query: SELECT 1
-   slave1:
-    url: 'jdbc:postgresql://${database.host2}:${database.port}/${database.db-name}?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false'
-    username: postgres
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
-      idle-timeout: 600000
-      connection-test-query: SELECT 1
-  slave2:
-    url: 'jdbc:postgresql://${database.host3}:${database.port}/${database.db-name}?createDatabaseIfNotExists=true&autoReconnect=true&allowPublicKeyRetrieval=true&useSSL=false'
-    username: postgres
-    password: ${DB_PASSWORD}
-    driver-class-name: org.postgresql.Driver
-    hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
-      idle-timeout: 600000
-      connection-test-query: SELECT 1
+    master:
+      url: jdbc:postgresql://${database.host1}:${database.port}/${database.db-name}?sslmode=require
+      username: postgres
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 20
+        minimum-idle: 8
+        connection-timeout: 30000
+        idle-timeout: 600000
+        connection-test-query: SELECT 1
+
+    slave1:
+      url: jdbc:postgresql://${database.host2}:${database.port}/${database.db-name}?sslmode=require
+      username: postgres
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 15
+        minimum-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        connection-test-query: SELECT 1
+
+    slave2:
+      url: jdbc:postgresql://${database.host3}:${database.port}/${database.db-name}?sslmode=require
+      username: postgres
+      password: ${DB_PASSWORD}
+      driver-class-name: org.postgresql.Driver
+      hikari:
+        maximum-pool-size: 15
+        minimum-idle: 5
+        connection-timeout: 30000
+        idle-timeout: 600000
+        connection-test-query: SELECT 1
+
   sql:
     init:
       mode: always
