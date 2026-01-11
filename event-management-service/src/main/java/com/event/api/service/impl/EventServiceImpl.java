@@ -88,7 +88,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional
+    @Transactional // default, goes to MASTER
     public void deleteEvent(UUID eventId) {
        try {
            Event event = eventRepository.findById(eventId)
@@ -105,6 +105,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true) // ensures read goes to SLAVE
     @Cacheable(
             key = "{#filterCriteria.startDate, #filterCriteria.endDate, #filterCriteria.location, #filterCriteria.visibility, #root.methodName}",
             value = "EVENTS")
@@ -138,6 +139,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(key = "{#pageable, #root.methodName}",value = "EVENTS")
     public Page<Event> getUpcomingEvents(Pageable pageable) {
         Instant currentTime = Instant.now();
@@ -146,6 +148,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(key = "{#userId, #root.methodName}",value = "EVENTS")
     public List<Event> getUserEvents(UUID userId) {
         LOGGER.info("Fetching Events for User ID {}", userId);
@@ -153,6 +156,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     @Cacheable(key = "{#eventId, #root.methodName}",value = "EVENTS")
     public EventDetailsResponse getEventDetails(UUID eventId) {
 
