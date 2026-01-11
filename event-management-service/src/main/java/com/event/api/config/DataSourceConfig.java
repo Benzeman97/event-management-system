@@ -28,9 +28,9 @@ public class DataSourceConfig {
                                         DataSource slave2DataSource) {
       
       Map<Object, Object> targetDataSources = new HashMap<>();
-      targetDataSources.put("MASTER", masterDataSource);
-      targetDataSources.put("SLAVE1", slave1DataSource);
-      targetDataSources.put("SLAVE2", slave2DataSource);
+      targetDataSources.put(DataSourceType.MASTER, masterDataSource);
+      targetDataSources.put(DataSourceType.SLAVE1, slave1DataSource);
+      targetDataSources.put(DataSourceType.SLAVE2, slave2DataSource);
 
       ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
       routingDataSource.setTargetDataSources(targetDataSources);
