@@ -1,3 +1,4 @@
+// Configure Master + 2 Slaves
 
 @Configuration
 public class DataSourceConfig {
