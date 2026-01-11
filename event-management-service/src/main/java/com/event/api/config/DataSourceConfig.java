@@ -35,6 +35,7 @@ public class DataSourceConfig {
       ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
       routingDataSource.setTargetDataSources(targetDataSources);
       routingDataSource.setDefaultTargetDataSource(masterDataSource);
+      routingDataSource.afterPropertiesSet();
       return routingDataSource;
     }
 
