@@ -64,10 +64,23 @@ spring:
     hibernate:
       ddl-auto: update
   redis:
-    host: 104.36.85.71
-    port: 6969
-    cache:
-      cache-names: EVENTS
-      redis:
-        time-to-live: 300000
+   cluster:
+    nodes:
+      - 104.36.85.71:6969
+      - 104.36.85.72:6969
+      - 104.36.85.73:6969
+    max-redirects: 5
+   timeout: 5000 
+  cache:
+   cache-names: EVENTS
+   redis:
+     time-to-live: 300000
 
+# Add replica for Master A
+# redis-cli --cluster add-node 104.36.85.74:6369 104.36.85.71:6369 --cluster-slave --cluster-master-id <MasterA_ID>
+
+# Add replica for Master B
+# redis-cli --cluster add-node 104.36.85.75:6369 104.36.85.72:6369 --cluster-slave --cluster-master-id <MasterB_ID>
+
+# Add replica for Master C
+# redis-cli --cluster add-node 104.36.85.76:6369 104.36.85.73:6369 --cluster-slave --cluster-master-id <MasterC_ID>
