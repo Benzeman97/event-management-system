@@ -183,5 +183,25 @@ public class EventServiceImpl implements EventService {
         return new EventResponse(user, payment, booking);
     } */
 
+    /* 
+    @Override
+    @Cacheable(value = "payments", key = "#request.id")  // check cache first
+    @CircuitBreaker(name = "paymentService", fallbackMethod = "fallback")  // fallback if still fails
+    @Retry(name = "paymentService")  // retry on failure
+    @Transactional(readOnly = true) // DB transaction (if needed)
+    public PaymentResponse createPayment(PaymentRequest request) {
+        return paymentClient.createPayment(request);
+    }
+    
+     private PaymentResponse createPaymentFallback(PaymentRequest request, Exception ex) {
+        LOGGER.error("Payment service unavailable for request: {}", request.getId(), ex);
+        return PaymentResponse.builder()
+                .status("FAILED")
+                .message("Service temporarily unavailable. Please try again later.")
+                .build();
+    }
+    
+    */
+
 
 }
