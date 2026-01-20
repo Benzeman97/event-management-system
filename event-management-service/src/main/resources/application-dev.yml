@@ -10,6 +10,30 @@ security:
     client-secret: rzv9pBSHclLoEaFmZ81PtmT03wAmaJSXLkOwi8tI=
     grant-type: password
 
+resilience4j:
+ circuitbreaker:
+  instances:
+   paymentService: ##name you reference in @CircuitBreaker(name = "paymentService")
+     registerHealthIndicator: true
+     slidingWindowType: COUNT_BASED
+     slidingWindowSize: 5
+     permitted-number-of-calls-in-half-open-state: 3
+     wait-duration-in-open-state: 10s
+     failure-rate-threshold: 50
+     slow-call-rate-threshold: 100
+     slow-call-duration-threshold: 2s
+
+ retry:
+    instances:
+      paymentService:
+        max-attempts: 3
+        wait-duration: 1s
+        retry-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - java.io.IOException
+          - feign.RetryableException
+    
+
 database:
   host1: 'event-managment-db.cb6kiu4gsw4z.us-east-1.rds.amazonaws.com'
   host2: 'event-managment-db.cb6kiu4gsw5z.us-east-1.rds.amazonaws.com'
@@ -82,6 +106,7 @@ spring:
      default:
       connectTimeout: 3000
       readTimeout: 5000
+      logger-level: debug
 
 # Add replica for Master A
 # redis-cli --cluster add-node 104.36.85.74:6369 104.36.85.71:6369 --cluster-slave --cluster-master-id <MasterA_ID>
