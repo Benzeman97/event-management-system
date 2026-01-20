@@ -31,18 +31,18 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
     final private static Logger LOGGER = LogManager.getLogger(EventServiceImpl.class);
 
     private final UserService userService;
     private final EventRepository eventRepository;
+    private final UserClient userClient;
+    private final PaymentClient paymentClient;
+    private final BookingClient bookingClient;
 
-    public EventServiceImpl(UserService userService,EventRepository eventRepository){
-        this.userService=userService;
-        this.eventRepository=eventRepository;
-    }
-
+    
     @Override
     @Transactional
     public String createEvent(CreateEventRequest request){
