@@ -105,10 +105,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional(readOnly = true) // ensures read goes to SLAVE
     @Cacheable(
             key = "{#filterCriteria.startDate, #filterCriteria.endDate, #filterCriteria.location, #filterCriteria.visibility, #root.methodName}",
             value = "EVENTS")
+    @Transactional(readOnly = true) // ensures read goes to SLAVE
     public List<Event> getFilteredEvents(EventFilterCriteria filterCriteria) {
 
         Instant startDate = null;
@@ -139,8 +139,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     @Cacheable(key = "{#pageable, #root.methodName}",value = "EVENTS")
+    @Transactional(readOnly = true)
     public Page<Event> getUpcomingEvents(Pageable pageable) {
         Instant currentTime = Instant.now();
         LOGGER.info("Fetching Upcoming Events - Page: {}, Size: {}", pageable.getPageNumber(), pageable.getPageSize());
@@ -148,16 +148,16 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     @Cacheable(key = "{#userId, #root.methodName}",value = "EVENTS")
+    @Transactional(readOnly = true)
     public List<Event> getUserEvents(UUID userId) {
         LOGGER.info("Fetching Events for User ID {}", userId);
         return eventRepository.findUserEventsByUserId(userId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     @Cacheable(key = "{#eventId, #root.methodName}",value = "EVENTS")
+    @Transactional(readOnly = true)
     public EventDetailsResponse getEventDetails(UUID eventId) {
 
         Event event = eventRepository.findById(eventId)
