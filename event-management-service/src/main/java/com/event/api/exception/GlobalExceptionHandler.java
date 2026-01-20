@@ -34,6 +34,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler({UserServiceException.class, PaymentServiceException.class, BookingServiceException.class})
+    public ResponseEntity<String> handleServiceExceptions(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                             .body(ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessageResponse> handleGenericException(Exception ex, Locale locale) {
         ErrorMessageResponse errorMessage = new ErrorMessageResponse(
