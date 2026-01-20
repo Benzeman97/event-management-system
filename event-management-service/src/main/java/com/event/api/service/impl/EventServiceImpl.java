@@ -169,5 +169,19 @@ public class EventServiceImpl implements EventService {
         return new EventDetailsResponse(event, attendeeCount);
     }
 
+    
+  /*  public EventResponse placeOrder(Long userId, OrderRequest request) {
+
+        UserDto user = userClient.getUser(userId);
+
+        PaymentResponse payment =
+                paymentClient.createPayment(request.getPayment());
+
+        BookingResponse booking =
+                bookingClient.createBooking(request.getBooking());
+
+        return new EventResponse(user, payment, booking);
+    } */
+
 
 }
