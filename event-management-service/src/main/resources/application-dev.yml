@@ -63,7 +63,7 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  redis:
+ redis:
    cluster:
     nodes:
       - 104.36.85.71:6969
@@ -71,10 +71,17 @@ spring:
       - 104.36.85.73:6969
     max-redirects: 5
    timeout: 5000 
-  cache:
+   cache:
    cache-names: EVENTS
    redis:
      time-to-live: 300000
+ cloud:
+  openfeign:
+   client:
+    config:
+     default:
+      connectTimeout: 3000
+      readTimeout: 5000
 
 # Add replica for Master A
 # redis-cli --cluster add-node 104.36.85.74:6369 104.36.85.71:6369 --cluster-slave --cluster-master-id <MasterA_ID>
