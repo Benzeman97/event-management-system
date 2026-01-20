@@ -186,9 +186,9 @@ public class EventServiceImpl implements EventService {
     /* 
     @Override
     @Cacheable(value = "payments", key = "#request.id")  // check cache first
-    @CircuitBreaker(name = "paymentService", fallbackMethod = "fallback")  // fallback if still fails
-    @Retry(name = "paymentService")  // retry on failure
-    @Transactional(readOnly = true) // DB transaction (if needed)
+    @CircuitBreaker(name = "paymentService", fallbackMethod = "fallback")  // Fast fail (prevents retries when circuit open)
+    @Retry(name = "paymentService")  // retry on failure (Only retries when circuit is closed)
+    @Transactional(readOnly = true) // DB transaction (if needed) (Expensive (database connection))
     public PaymentResponse createPayment(PaymentRequest request) {
         return paymentClient.createPayment(request);
     }
