@@ -14,25 +14,24 @@ resilience4j:
  circuitbreaker:
   instances:
    paymentService: ##name you reference in @CircuitBreaker(name = "paymentService")
-     registerHealthIndicator: true
-     slidingWindowType: COUNT_BASED
-     slidingWindowSize: 5
-     permitted-number-of-calls-in-half-open-state: 3
-     wait-duration-in-open-state: 10s
-     failure-rate-threshold: 50
-     slow-call-rate-threshold: 100
-     slow-call-duration-threshold: 2s
+     registerHealthIndicator: true ## Exposes /actuator/health info
+     slidingWindowType: COUNT_BASED ## Uses last N calls (not time-based)
+     slidingWindowSize: 10  ## Looks at last 10 calls
+     minimumNumberOfCalls: 5 ## minimumNumberOfCalls is the minimum number of requests that must happen before the Circuit Breaker is allowed to make a decision  # Without minimumNumberOfCalls * First call fails → 100% failure rate * Circuit opens immediately * System blocks all traffic too early
+     permitted-number-of-calls-in-half-open-state: 3 ## How many test calls are allowed when recovering #3 test calls in HALF_OPEN # 3 requests allowed # If all succeed → CLOSED # If any fails → OPEN again # Prevents flooding a recovering service
+     wait-duration-in-open-state: 10s ## Circuit stays OPEN for 10 seconds # For 10 seconds → no calls allowed # After 10s → goes to HALF_OPEN # “Let the payment service breathe for 10 seconds”
+     failure-rate-threshold: 50 ## ≥ 50% failures → circuit opens
+     slow-call-rate-threshold: 50 ## Only if 50% are slow → count as failure
+     slow-call-duration-threshold: 2s ## Calls > 2s are considered slow # Response > 2 seconds = slow # Even if response is 200 OK
 
  retry:
     instances:
       paymentService:
-        max-attempts: 3
-        wait-duration: 1s
-        retry-exceptions:
-          - org.springframework.web.client.HttpServerErrorException
-          - java.io.IOException
-          - feign.RetryableException
-    
+        max-attempts: 3 ## Number of retry attempts
+        wait-duration: 1s ## Pause between retries
+        retry-exceptions: ## Exceptions that trigger retry # “Only retry the call if the exception thrown by the method matches one of these types.”  # So, if a call fails and throws any other exception (like PaymentServiceException or IllegalArgumentException), Resilience4j will NOT retry it.
+          - java.io.IOException  ## Network errors
+          - feign.RetryableException  ## feign.RetryableException
 
 database:
   host1: 'event-managment-db.cb6kiu4gsw4z.us-east-1.rds.amazonaws.com'
