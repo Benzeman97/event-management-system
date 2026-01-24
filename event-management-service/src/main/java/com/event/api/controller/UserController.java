@@ -46,6 +46,9 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<UserResponse> registerUser(@RequestBody UserResponse userRequest) {
+
+        // do following logic in service layer, not here
+         
         // Save user (fast operation)
         UserResponse user = userService.getUserById(1); // Simulating user creation
         
