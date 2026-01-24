@@ -15,7 +15,7 @@ public class AsyncConfiguration {
           // Thread name prefix for easier debugging
           executor.setThreadNamePrefix("email-async-");
           // Kill idle threads after 60s
-          executor.setKeepAliveTime(60, TimeUnit.SECONDS);
+          executor.setKeepAliveSeconds(60);
           // Even core threads can die if idle
           executor.setAllowCoreThreadTimeOut(true);
           // What to do when queue is full
@@ -23,6 +23,11 @@ public class AsyncConfiguration {
           executor.setRejectedExecutionHandler(
             new java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy()
           );
+         //  GRACEFUL SHUTDOWN - Wait for tasks to complete
+         executor.setWaitForTasksToCompleteOnShutdown(true);
+
+          //  GRACEFUL SHUTDOWN - Wait up to 60 seconds
+          executor.setAwaitTerminationSeconds(60);
 
           executor.initialize();
           return executor;
