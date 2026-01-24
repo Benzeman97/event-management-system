@@ -72,5 +72,5 @@ public class AsyncEmailService {
         
         logger.info("Bulk email send completed");
     }
-}
+  }
 }
