@@ -1,12 +1,21 @@
-spring:
-  mail:
+email:
+  smtp:
     host: smtp.gmail.com
     port: 587
-    username: your-email@gmail.com
-    password: your-app-password
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+    username: ${EMAIL_USERNAME}  # From environment variable
+    password: ${EMAIL_PASSWORD}  # From environment variable
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 5000
+        writetimeout: 5000
+  from:
+    address: noreply@yourapp.com
+    name: Your App Name
+  templates:
+    welcome: classpath:/email-templates/welcome.html
+    reset-password: classpath:/email-templates/reset-password.html
