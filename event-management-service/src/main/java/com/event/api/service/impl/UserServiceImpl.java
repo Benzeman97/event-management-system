@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Cacheable(key = "{#hostId,#root.methodName}",value = "EVENTS")
+    @Cacheable(value = "user:entity", key = "#hostId")
     public User getHost(String hostId) {
         return userRepository.findById(UUID.fromString(hostId))
                 .orElseThrow(()->{
