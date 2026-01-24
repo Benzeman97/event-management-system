@@ -7,6 +7,8 @@ services:
     environment:
       - EMAIL_USERNAME=prod@example.com
       - EMAIL_PASSWORD=${EMAIL_PASSWORD} # From host environment (export EMAIL_PASSWORD=prod-secret-password / Set environment variables on the server)
+  # env_file:
+     # - .env  # Docker Compose reads this file from host
     ports:
       - "8090:8090"
     networks:
