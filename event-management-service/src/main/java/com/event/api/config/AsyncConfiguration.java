@@ -14,6 +14,10 @@ public class AsyncConfiguration {
           executor.setQueueCapacity(100);
           // Thread name prefix for easier debugging
           executor.setThreadNamePrefix("email-async-");
+          // Kill idle threads after 60s
+          executor.setKeepAliveTime(60, TimeUnit.SECONDS);
+          // Even core threads can die if idle
+          executor.setAllowCoreThreadTimeOut(true);
           // What to do when queue is full
           // CallerRunsPolicy - caller thread executes the task
           executor.setRejectedExecutionHandler(
