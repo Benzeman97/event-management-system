@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  event-service:
+    image: event-management-service
+    container_name: event-service
+    environment:
+      - EMAIL_USERNAME=prod@example.com
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD} # From host environment (export EMAIL_PASSWORD=prod-secret-password / Set environment variables on the server)
+    ports:
+      - "8090:8090"
+    networks:
+      - event-service-network
+    restart: on-failure
+
+networks:
+  event-service-network:
