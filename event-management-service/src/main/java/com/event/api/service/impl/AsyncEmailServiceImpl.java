@@ -7,17 +7,19 @@ public class AsyncEmailService {
      /**
      * Send email asynchronously - fire and forget
      */
-    @Async
+    @Async("emailTaskExecutor")
     public void sendEmailAsync(EmailRequest emailRequest) {
         try {
             logger.info("Starting async email send to: {}", emailRequest.getTo());
             
-            // Simulate email sending (replace with actual email service)
-            Thread.sleep(2000); // Simulating network delay
-            
-            System.out.println("Email sent successfully to: " + emailRequest.getTo());
-            System.out.println("Subject: " + emailRequest.getSubject());
-            System.out.println("Body: " + emailRequest.getBody());
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+              
+            helper.setTo(emailRequest.getTo());
+            helper.setSubject(emailRequest.getSubject());
+            helper.setText(emailRequest.getBody(), true);
+
+            mailSender.send(message); // This naturally takes 1-3 seconds
             
             logger.info("Email sent successfully to: {}", emailRequest.getTo());
             
@@ -33,15 +35,20 @@ public class AsyncEmailService {
      /**
      * Send email asynchronously with CompletableFuture - can track result
      */
-    @Async
+    @Async("emailTaskExecutor")
     public CompletableFuture<Boolean> sendEmailWithResult(EmailRequest emailRequest) {
         try {
             logger.info("Starting async email send to: {}", emailRequest.getTo());
             
-            // Simulate email sending
-            Thread.sleep(2000);
+           MimeMessage message = mailSender.createMimeMessage();
+           MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setTo(emailRequest.getTo());
+            helper.setSubject(emailRequest.getSubject());
+            helper.setText(emailRequest.getBody(), true);
+
+            mailSender.send(message);
             
-            System.out.println("Email sent to: " + emailRequest.getTo());
             logger.info("Email sent successfully to: {}", emailRequest.getTo());
             
             return CompletableFuture.completedFuture(true);
@@ -56,15 +63,24 @@ public class AsyncEmailService {
   /**
      * Send bulk emails asynchronously
      */
-    @Async
+    @Async("emailTaskExecutor")
     public void sendBulkEmails(java.util.List<EmailRequest> emailRequests) {
         logger.info("Starting bulk email send for {} recipients", emailRequests.size());
         
         for (EmailRequest request : emailRequests) {
             try {
-                // Send each email
-                Thread.sleep(100); // Small delay between emails
-                System.out.println("Bulk email sent to: " + request.getTo());
+                  
+               MimeMessage message = mailSender.createMimeMessage();
+               MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            helper.setTo(request.getTo());        
+            helper.setSubject(request.getSubject()); 
+            helper.setText(request.getBody(), true);
+
+            mailSender.send(message);
+            
+            logger.info("Email sent successfully to: {}", emailRequest.getTo());
+
             } catch (Exception e) {
                 logger.error("Failed to send bulk email to: {}", request.getTo(), e);
             }
@@ -72,5 +88,4 @@ public class AsyncEmailService {
         
         logger.info("Bulk email send completed");
     }
-  }
 }
