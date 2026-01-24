@@ -2,7 +2,7 @@ spring:
   application:
     name: event-management-service
   profiles:
-    active: dev
+    active: dev, gmail
   config:
     import: classpath:services.yml
 
