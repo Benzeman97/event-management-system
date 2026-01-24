@@ -1,5 +1,5 @@
 @Service
-public class EmailTemplateService {
+public class EmailTemplateServiceImpl {
     
     @Autowired
     private TemplateEngine templateEngine;
