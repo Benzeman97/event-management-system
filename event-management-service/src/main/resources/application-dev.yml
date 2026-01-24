@@ -95,7 +95,12 @@ spring:
     max-redirects: 5
    timeout: 5000 
    cache:
-   cache-names: EVENTS
+   cache-names:
+    - event:single
+    - event:list
+    - event:page
+    - attendance:single
+    - user:entity
    redis:
      time-to-live: 300000
  cloud:
