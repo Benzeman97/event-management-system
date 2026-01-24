@@ -19,8 +19,25 @@ public class AsyncConfiguration {
           executor.setRejectedExecutionHandler(
             new java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy()
           );
+
           executor.initialize();
           return executor;
     }
+
+    // Bean(name = "commonTaskExecutor")
+    // public Executor emailTaskExecutor() {
+      
+    //       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    //       executor.setCorePoolSize(5);
+    //       executor.setMaxPoolSize(15);
+    //       executor.setQueueCapacity(100);
+    //       executor.setThreadNamePrefix("common-async-");
+    //       executor.setRejectedExecutionHandler(
+    //         new java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy()
+    //       );
+
+    //       executor.initialize();
+    //       return executor;
+    // }
 
 }
