@@ -90,22 +90,5 @@ public class EmailProperties {
         }
     }
 
-    public static class Templates {
-        private String welcome;
-        private String resetPassword;
-
-        // Getters and Setters
-        public String getWelcome() {
-            return welcome;
-        }
-        public void setWelcome(String welcome) {
-            this.welcome = welcome;
-        }
-        public String getResetPassword() {
-            return resetPassword;
-        }
-        public void setResetPassword(String resetPassword) {
-            this.resetPassword = resetPassword;
-        }
-    }
 }
+
