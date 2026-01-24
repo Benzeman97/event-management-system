@@ -76,7 +76,9 @@ public class EventServiceImpl implements EventService {
                event = EventMapper.updateEventFromRequest(request,event,host);
                eventRepository.save(event);
                LOGGER.info("Event updated successfully with ID {}", request.getEventId());
-                return event.getId().toString();
+               evictEventCaches(request.getId());
+         u     updateEventCache(event.getId(), event);
+               return event.getId().toString();
         } catch (DateTimeParseException ex) {
             LOGGER.error("Invalid date format for event with ID {}", request.getEventId());
             throw new ApplicationException(100003, "error.invalid.date.format");
@@ -88,6 +90,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @CacheEvict(value = {"event:single", "event:list", "event:page"}, key = "#eventId")
     @Transactional // default, goes to MASTER
     public void deleteEvent(UUID eventId) {
        try {
@@ -105,9 +108,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Cacheable(
-            key = "{#filterCriteria.startDate, #filterCriteria.endDate, #filterCriteria.location, #filterCriteria.visibility, #root.methodName}",
-            value = "EVENTS")
+    @Cacheable( value = "event:list",
+            key = "#filterCriteria.startDate + '-' + #filterCriteria.endDate + '-' + #filterCriteria.location + '-' + #filterCriteria.visibility")
     @Transactional(readOnly = true) // ensures read goes to SLAVE
     public List<Event> getFilteredEvents(EventFilterCriteria filterCriteria) {
 
@@ -139,7 +141,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Cacheable(key = "{#pageable, #root.methodName}",value = "EVENTS")
+    @Cacheable(value = "event:page", key = "#pageable.pageNumber + '-' + #pageable.pageSize")
     @Transactional(readOnly = true)
     public Page<Event> getUpcomingEvents(Pageable pageable) {
         Instant currentTime = Instant.now();
@@ -148,7 +150,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Cacheable(key = "{#userId, #root.methodName}",value = "EVENTS")
+    @Cacheable(value = "event:list", key = "#userId")
     @Transactional(readOnly = true)
     public List<Event> getUserEvents(UUID userId) {
         LOGGER.info("Fetching Events for User ID {}", userId);
@@ -156,7 +158,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Cacheable(key = "{#eventId, #root.methodName}",value = "EVENTS")
+    @Cacheable(value = "event.single", key = "#eventId")
     @Transactional(readOnly = true)
     public EventDetailsResponse getEventDetails(UUID eventId) {
 
@@ -169,6 +171,21 @@ public class EventServiceImpl implements EventService {
         return new EventDetailsResponse(event, attendeeCount);
     }
 
+    @CacheEvict(value = "event:list", key = "#userId")
+    private void evictEventList(String userId) {}
+
+    @CacheEvict(value = "event:page", key = "#userId")
+    private void evictEventPage(String userId) {}
+
+    private void evictUserCaches(String eventId) {
+       evictEventList(eventId);
+        evictEventPage(eventId);
+    }
+
+    @CachePut(value = "event:single", key = "#eventId")
+    private Event updateEventCache(String eventId, Event event) {
+         return event; // This caches the Event object
+   }
     
   /*  public EventResponse placeOrder(Long userId, OrderRequest request) {
 
@@ -185,7 +202,7 @@ public class EventServiceImpl implements EventService {
 
     /* 
     @Override
-    @Cacheable(value = "payments", key = "#request.id")  // check cache first
+    @Cacheable(value = "payment:single", key = "#request.id")  // check cache first
     @CircuitBreaker(name = "paymentService", fallbackMethod = "fallback")  // Fast fail (prevents retries when circuit open)
     @Retry(name = "paymentService")  // retry on failure (Only retries when circuit is closed)
     @Transactional(readOnly = true) // DB transaction (if needed) (Expensive (database connection))
