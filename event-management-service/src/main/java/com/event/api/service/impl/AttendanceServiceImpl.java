@@ -23,7 +23,7 @@ public class AttendanceServiceImpl implements AttendanceService {
     }
 
     @Override
-    @Cacheable(value = "attendance:result", key = "#eventId +'-'+ #userId")
+    @Cacheable(value = "attendance:result", keyGenerator = "customKeyGenerator")
     public String getAttendanceStatusForEvent(UUID eventId, UUID userId) {
 
         Attendance attendance = attendanceRepository.findByEventIdAndUserId(eventId, userId)
