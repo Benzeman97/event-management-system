@@ -76,8 +76,6 @@ public class EventServiceImpl implements EventService {
                event = EventMapper.updateEventFromRequest(request,event,host);
                eventRepository.save(event);
                LOGGER.info("Event updated successfully with ID {}", request.getEventId());
-               evictEventCaches(request.getId());
-         u     updateEventCache(event.getId(), event);
                return event.getId().toString();
         } catch (DateTimeParseException ex) {
             LOGGER.error("Invalid date format for event with ID {}", request.getEventId());
@@ -171,22 +169,6 @@ public class EventServiceImpl implements EventService {
         return new EventDetailsResponse(event, attendeeCount);
     }
 
-    @CacheEvict(value = "event:list", key = "#userId")
-    private void evictEventList(String userId) {}
-
-    @CacheEvict(value = "event:page", key = "#userId")
-    private void evictEventPage(String userId) {}
-
-    private void evictUserCaches(String eventId) {
-       evictEventList(eventId);
-        evictEventPage(eventId);
-    }
-
-    @CachePut(value = "event:single", key = "#eventId")
-    private Event updateEventCache(String eventId, Event event) {
-         return event; // This caches the Event object
-   }
-    
   /*  public EventResponse placeOrder(Long userId, OrderRequest request) {
 
         UserDto user = userClient.getUser(userId);
