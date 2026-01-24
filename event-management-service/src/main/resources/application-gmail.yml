@@ -16,6 +16,3 @@ email:
   from:
     address: noreply@yourapp.com
     name: Your App Name
-  templates:
-    welcome: classpath:/email-templates/welcome.html
-    reset-password: classpath:/email-templates/reset-password.html
