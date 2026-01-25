@@ -11,7 +11,8 @@ public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
       // ThreadLocal to stick a slave per transaction/thread
     private static final ThreadLocal<DataSourceType> SELECTED_SLAVE = new ThreadLocal<>();
 
-      private final Random random = new Random();
+    // Counter for round-robin distribution
+    private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
       // Every time a database connection is requested, Spring calls this method to decide which actual DataSource (MASTER or SLAVE) to use.
 
@@ -20,13 +21,14 @@ public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
 
         // Writes → always go to MASTER
         if (!ReplicationContext.isReadOnly()) {
-            SELECTED_SLAVE.remove();  // Remove sticky slave for write transaction
+            SELECTED_SLAVE.remove();  // clear ThreadLocal for write transaction
             return DataSourceType.MASTER;
         }
 
-        // Reads → pick one slave per transaction/thread
+       // Reads → pick one slave per transaction/thread
         if (SELECTED_SLAVE.get() == null) {
-            SELECTED_SLAVE.set(SLAVES.get(random.nextInt(SLAVES.size())));
+            int index = COUNTER.getAndIncrement() % SLAVES.size();
+            SELECTED_SLAVE.set(SLAVES.get(index));
         }
 
         return SELECTED_SLAVE.get();
