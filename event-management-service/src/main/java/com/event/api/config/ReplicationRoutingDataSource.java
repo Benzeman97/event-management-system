@@ -34,5 +34,4 @@ public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
         return SELECTED_SLAVE.get();
     }
 
-
 }
