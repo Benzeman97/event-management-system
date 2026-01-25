@@ -1,4 +1,4 @@
-Create a User table with 5 Partitions
+Create a user, attendance and event tables with Partitions
 -----------------------------------
 
 CREATE TABLE User (
