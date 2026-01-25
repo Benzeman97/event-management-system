@@ -1,4 +1,4 @@
-Create a user, attendance, and event tables with Partitions
+Create a user, attendance, and event tables with 3 Partitions
 -----------------------------------
 
 CREATE TABLE User (
@@ -22,7 +22,7 @@ CREATE TABLE attendance (
     CONSTRAINT fk_event FOREIGN KEY (event_id) REFERENCES events(event_id)
 )
 PARTITION BY HASH(user_id)
-PARTITIONS 5;
+PARTITIONS 3;
 
 CREATE TABLE event (
     id BIGINT NOT NULL AUTO_INCREMENT,
