@@ -93,16 +93,23 @@ spring:
       - 104.36.85.72:6969
       - 104.36.85.73:6969
     max-redirects: 5
-   timeout: 5000 
+   timeout: 1000 
    cache:
-   cache-names:
-    - event:single
-    - event:list
-    - event:page
-    - attendance:single
-    - user:entity
-   redis:
+    type: redis
+    cache-names:
+     - event:single
+     - event:list
+     - event:page
+     - attendance:single
+     - user:entity
+    redis:
      time-to-live: 300000
+  lettuce:
+    pool:
+      max-active: 50 # Max total connections
+      max-idle: 10 # Max idle connections to KEEP
+      min-idle: 10 # Min idle connections
+      max-wait: 1000ms # After 1 second, throw exception if no connection available
  cloud:
   openfeign:
    client:
