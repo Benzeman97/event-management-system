@@ -115,9 +115,9 @@ spring:
    client:
     config:
      default:
-      connectTimeout: 3000
-      readTimeout: 5000
-      logger-level: debug
+      connectTimeout: 3000  # Max time (ms) to establish connection to target service; throws ConnectTimeoutException if exceeded
+      readTimeout: 5000 # Max time (ms) to wait for response after connection is established; throws ReadTimeoutException if exceeded
+      logger-level: debug # Logs full HTTP request/response details for debugging (not recommended in production) / use 'none' in production
 
 # Add replica for Master A
 # redis-cli --cluster add-node 104.36.85.74:6369 104.36.85.71:6369 --cluster-slave --cluster-master-id <MasterA_ID>
