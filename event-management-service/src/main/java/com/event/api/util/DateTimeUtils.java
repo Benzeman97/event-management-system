@@ -3,7 +3,7 @@ package com.event.api.util;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
-public class DateTimeUtil {
+public final class DateTimeUtil {
 
     public static LocalDateTime parseToLocalDateTime(String time) {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
